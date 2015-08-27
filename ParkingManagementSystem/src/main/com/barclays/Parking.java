@@ -1,20 +1,23 @@
 package com.barclays;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Parking {
     private int capacity;
-    List<Car> parkingLot = new ArrayList();
+    static int currentTokenNumber = 1;
+    private HashMap<Token, Car> parkingLot = new HashMap();
 
     List<ParkingObserver> observers = new ArrayList();
     ParkingOwner parkingOwner;
+
     public void registerObserver(ParkingObserver parkingObserver) {
         observers.add(parkingObserver);
     }
-    public void registerOwner(ParkingOwner owner)
-    {
-        parkingOwner=owner;
+
+    public void registerOwner(ParkingOwner owner) {
+        parkingOwner = owner;
         observers.add(parkingOwner);
     }
 
@@ -23,25 +26,28 @@ public class Parking {
     }
 
     private boolean isAlreadyParked(Car car) {
-        return parkingLot.contains(car);
+        return parkingLot.containsValue(car);
     }
 
-    public boolean park(Car car) {
-        if (car != null){
+    public Token park(Car car) {
+
             if (!isFull()) {
-                if (isAlreadyParked(car))
-                    return false;
-                else {
-                    parkingLot.add(car);
+                if (isAlreadyParked(car)) {
+                    throw new CarIsAlreadyParkedException();
+
+                } else {
+                    Token token = generateToken();
+                    parkingLot.put(token, car);
                     //Notify All Observers
                     if (isFull())
                         notifyObserversThatParkingIsFull();
 
-                    return true;
+                    return token;
                 }
-            }
-        }
-        return false;
+
+            } else
+               throw new ParkingFullException();
+
     }
 
     private void notifyObserversThatParkingIsFull() {
@@ -49,22 +55,30 @@ public class Parking {
     }
 
     private void notifyOwnerThatParkingIsAvailable() {
-      parkingOwner.parkingAvailableNotification();
+        parkingOwner.parkingAvailableNotification();
     }
 
-    public Car unPark(Car car) {
-        if (isAlreadyParked(car)) {
+    public Car unPark(Token token) {
+        if (isTokenPresent(token)) {
             if (isFull())
                 notifyOwnerThatParkingIsAvailable();
-
-            return parkingLot.remove(parkingLot.indexOf(car));
+            return parkingLot.remove(token);
         }
-        return null;
+        else
+          throw new CarIsNotPresent();
+    }
+
+    public boolean isTokenPresent(Token token) {
+        return parkingLot.containsKey(token);
     }
 
     public boolean isFull() {
         if (parkingLot.size() >= this.capacity)
             return true;
         return false;
+    }
+
+    public Token generateToken() {
+        return new Token(currentTokenNumber++);
     }
 }
