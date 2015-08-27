@@ -11,7 +11,7 @@ public class ParkingOwner implements ParkingObserver {
     public void parkingFullNotification() {
 
     }
-
+    @Override
     public void parkingAvailableNotification() {
 
     }

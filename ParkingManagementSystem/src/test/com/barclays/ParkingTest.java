@@ -13,10 +13,8 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ParkingTest {
     Parking parking;
-
     ParkingOwner mockOwner;
     ParkingSecurity mockSecurity;
-
     Token mockToken;
 
     @Before
@@ -24,8 +22,6 @@ public class ParkingTest {
         mockOwner = mock(ParkingOwner.class);
         mockSecurity = mock(ParkingSecurity.class);
         mockToken = mock(Token.class);
-
-
     }
 
     @Test(expected = CarIsAlreadyParkedException.class)
@@ -47,14 +43,12 @@ public class ParkingTest {
         parking.park(second);
     }
 
-    /*@Test
+    @Test
     public void shouldParkIfCarIsNotParked() {
         parking = new Parking(10);
         Car other = new Car("MH17B1235");
         assertNotNull(parking.park(other));
-       
     }
-*/
 
     @Test
     public void shouldUnparkIfCarIsAlreadyParked() {
@@ -62,7 +56,6 @@ public class ParkingTest {
         Car parkedCar = new Car("MH12B1234");
         Token token = parking.park(parkedCar);
         Car outCar = parking.unPark(token);
-
         assertEquals(parkedCar, outCar);
     }
 
@@ -73,7 +66,6 @@ public class ParkingTest {
         parking.park(parkedCar);
         Token dummy = new Token(-50);
         parking.unPark(dummy);
-
     }
 
     @Test(expected = CarIsNotPresent.class)
@@ -83,42 +75,52 @@ public class ParkingTest {
         Token token = parking.park(parkedCar);
         parking.unPark(token);
         parking.unPark(token);
-
     }
-
 
     @Test
     public void shouldNotifyOwnerIfParkingIsFull() {
         parking = new Parking(1);
-        parking.registerOwner(mockOwner);
+        parking.registerForParkingFull(mockOwner);
         Car first = new Car("MH12B1234");
         parking.park(first);
         verify(mockOwner, times(1)).parkingFullNotification();
+    }
 
-
+    @Test
+    public void shouldNotNotifyOwnerIfParkingIsNotFull() {
+        parking = new Parking(2);
+        parking.registerForParkingFull(mockOwner);
+        Car first = new Car("MH12B1234");
+        parking.park(first);
+        verify(mockOwner, times(0)).parkingFullNotification();
     }
 
     @Test
     public void shouldNotifySecurityIfParkingIsFull() {
         parking = new Parking(1);
-        parking.registerObserver(mockSecurity);
+        parking.registerForParkingFull(mockSecurity);
         Car first = new Car("MH12B1234");
         parking.park(first);
         verify(mockSecurity, times(1)).parkingFullNotification();
+    }
 
+    @Test
+    public void shouldNotNotifySecurityIfParkingIsNotFull() {
+        parking = new Parking(2);
+        parking.registerForParkingFull(mockSecurity);
+        Car first = new Car("MH12B1234");
+        parking.park(first);
+        verify(mockSecurity, times(0)).parkingFullNotification();
     }
 
     @Test
     public void shouldNotifyOwnerIfParkingIsAvailable() {
         parking = new Parking(1);
         Car first = new Car("MH12B1234");
-        parking.registerOwner(mockOwner);
+        parking.registerForParkingAvailable(mockOwner);
         Token token=parking.park(first);
         parking.unPark(token);
         verify(mockOwner, times(1)).parkingAvailableNotification();
-
     }
-
-
 
 }

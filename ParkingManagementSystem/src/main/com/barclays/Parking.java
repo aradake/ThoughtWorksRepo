@@ -9,16 +9,16 @@ public class Parking {
     static int currentTokenNumber = 1;
     private HashMap<Token, Car> parkingLot = new HashMap();
 
-    List<ParkingObserver> observers = new ArrayList();
-    ParkingOwner parkingOwner;
+    List<ParkingObserver> observersToBeNotifiedOnParkingFull = new ArrayList();
+    List<ParkingObserver> getObserversToBeNotifiedOnParkingAvailable =new ArrayList();
 
-    public void registerObserver(ParkingObserver parkingObserver) {
-        observers.add(parkingObserver);
+    public void registerForParkingFull(ParkingObserver parkingObserver) {
+        observersToBeNotifiedOnParkingFull.add(parkingObserver);
     }
 
-    public void registerOwner(ParkingOwner owner) {
-        parkingOwner = owner;
-        observers.add(parkingOwner);
+    public void registerForParkingAvailable(ParkingObserver parkingObserver) {
+
+        getObserversToBeNotifiedOnParkingAvailable.add(parkingObserver);
     }
 
     public Parking(int capacity) {
@@ -31,7 +31,7 @@ public class Parking {
 
     public Token park(Car car) {
 
-            if (!isFull()) {
+           if (!isFull()) {
                 if (isAlreadyParked(car)) {
                     throw new CarIsAlreadyParkedException();
 
@@ -51,11 +51,11 @@ public class Parking {
     }
 
     private void notifyObserversThatParkingIsFull() {
-        observers.forEach(ParkingObserver::parkingFullNotification);
+        observersToBeNotifiedOnParkingFull.forEach(ParkingObserver::parkingFullNotification);
     }
 
     private void notifyOwnerThatParkingIsAvailable() {
-        parkingOwner.parkingAvailableNotification();
+        getObserversToBeNotifiedOnParkingAvailable.forEach(ParkingObserver::parkingAvailableNotification);
     }
 
     public Car unPark(Token token) {

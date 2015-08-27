@@ -6,4 +6,9 @@ public class ParkingSecurity implements ParkingObserver {
     public void parkingFullNotification() {
 
     }
+
+    @Override
+    public void parkingAvailableNotification() {
+
+    }
 }
