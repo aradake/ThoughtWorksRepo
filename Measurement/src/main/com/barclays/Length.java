@@ -25,13 +25,15 @@ public class Length {
         return result;
     }
 
-    public boolean compare(Length that) {
-        if (this.meters == that.meters && this.centimeters == that.centimeters)
-            return true;
 
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Length) {
+            Length that = (Length) object;
+            return (this.meters * 100 + this.centimeters == that.meters * 100 + that.centimeters);
+
+
+        }
         return false;
-
     }
-
-
 }

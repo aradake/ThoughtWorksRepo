@@ -8,12 +8,12 @@ public class ParkingOwner implements ParkingObserver {
     List<Parking> parkingList = new ArrayList();
 
     @Override
-    public String parkingFullNotification() {
-        return "Parking Full";
+    public void parkingFullNotification() {
+
     }
 
-    public String parkingAvailableNotification() {
-        return "Parking Available";
+    public void parkingAvailableNotification() {
+
     }
 
     public void addNewParking(Parking parking) {

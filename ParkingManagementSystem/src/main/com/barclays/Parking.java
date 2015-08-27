@@ -8,11 +8,15 @@ public class Parking {
     List<Car> parkingLot = new ArrayList();
 
     List<ParkingObserver> observers = new ArrayList();
-
+    ParkingOwner parkingOwner;
     public void registerObserver(ParkingObserver parkingObserver) {
         observers.add(parkingObserver);
     }
-
+    public void registerOwner(ParkingOwner owner)
+    {
+        parkingOwner=owner;
+        observers.add(parkingOwner);
+    }
 
     public Parking(int capacity) {
         this.capacity = capacity;
@@ -45,10 +49,7 @@ public class Parking {
     }
 
     private void notifyOwnerThatParkingIsAvailable() {
-        for (ParkingObserver observer : observers) {
-            ((ParkingOwner) observer).parkingAvailableNotification();
-        }
-
+      parkingOwner.parkingAvailableNotification();
     }
 
     public Car unPark(Car car) {

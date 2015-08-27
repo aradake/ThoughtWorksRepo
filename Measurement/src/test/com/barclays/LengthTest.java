@@ -17,9 +17,9 @@ public class LengthTest {
     }
 
     @Test
-    public void shouldCompareLength() {
-        Length first = new Length(5, 50);
+    public void shouldBeTrueIfLengthsAreEqual() {
+        Length first = new Length(5, 60);
         Length second = new Length(5, 50);
-        assertTrue(first.compare(second));
+        assertEquals(first,second);
     }
 }

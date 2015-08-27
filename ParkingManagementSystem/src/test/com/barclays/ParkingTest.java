@@ -1,11 +1,18 @@
 package com.barclays;
 
+import static org.junit.Assert.*;
+
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ParkingTest {
     Parking parking;
 
@@ -60,20 +67,36 @@ public class ParkingTest {
         assertEquals(null, parking.unPark(other));
     }
 
-    @Test
-    public void shouldShowFullIfParkingFull() {
-        parking = new Parking(1);
-        Car first = new Car("MH12B1234");
-        parking.park(first);
-        assertEquals("parking full", parking.isFull());
+    ParkingOwner mockOwner;
+    ParkingSecurity mockSecurity;
+
+    @Before
+    public void setUp() {
+        mockOwner = mock(ParkingOwner.class);
+        mockSecurity = mock(ParkingSecurity.class);
     }
 
     @Test
-    public void shouldShowAvailableIfParkingIsNotFull() {
-        parking = new Parking(2);
+    public void shouldNotifyIfParkingIsFull() {
+        parking = new Parking(1);
+        parking.registerOwner(mockOwner);
+        parking.registerObserver(mockSecurity);
         Car first = new Car("MH12B1234");
         parking.park(first);
-        assertEquals("available", parking.isFull());
+        verify(mockOwner, times(1)).parkingFullNotification();
+        verify(mockSecurity, times(1)).parkingFullNotification();
+
+    }
+
+    @Test
+    public void shouldNotifyOwnerIfParkingIsAvailable() {
+        parking = new Parking(1);
+        Car first = new Car("MH12B1234");
+        parking.registerOwner(mockOwner);
+        parking.park(first);
+        parking.unPark(first);
+        verify(mockOwner, times(1)).parkingAvailableNotification();
+
     }
 
     @Test
@@ -81,4 +104,5 @@ public class ParkingTest {
         parking = new Parking(1);
         assertFalse(parking.park(null));
     }
+
 }
