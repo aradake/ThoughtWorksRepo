@@ -81,4 +81,5 @@ public class Parking {
     public Token generateToken() {
         return new Token(currentTokenNumber++);
     }
+
 }

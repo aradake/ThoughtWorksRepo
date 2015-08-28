@@ -8,12 +8,9 @@ public class ParkingAttendant {
 
     private int parkingIndex;
 
-    public ParkingAttendant() {
+    public ParkingAttendant(List<Parking> parkings) {
+        parkingList=parkings;
         this.parkingIndex = -1;
-    }
-
-    public void assignParkingLots(List<Parking> parkings) {
-        parkingList = parkings;
     }
 
 
@@ -22,8 +19,24 @@ public class ParkingAttendant {
 
     }
 
-    private int selectParking() {
-        parkingIndex = (parkingIndex + 1) % parkingList.size();
+    private int selectParking() throws AllParkingsAreFullException {
+        if (areAllParkingsFull())
+            throw new AllParkingsAreFullException();
+
+        do{
+            parkingIndex = (parkingIndex + 1) % parkingList.size();
+
+        } while (parkingList.get(parkingIndex).isFull());
         return parkingIndex;
+    }
+
+    private boolean areAllParkingsFull() {
+
+        for (Parking parking : parkingList) {
+            if (!parking.isFull()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

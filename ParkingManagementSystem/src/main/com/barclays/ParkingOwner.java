@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ParkingOwner implements ParkingObserver {
 
-    List<Parking> parkingList = new ArrayList();
+
 
     @Override
     public void parkingFullNotification() {
@@ -16,16 +16,7 @@ public class ParkingOwner implements ParkingObserver {
 
     }
 
-    public void addNewParking(Parking parking) {
-        parkingList.add(parking);
-    }
 
-    public ParkingAttendant appointParkingAttendant() {
-        ParkingAttendant attendant = new ParkingAttendant();
-        return attendant;
-    }
 
-    public List<Parking> getParkingList() {
-        return parkingList;
-    }
+
 }
